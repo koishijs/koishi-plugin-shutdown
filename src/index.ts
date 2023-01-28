@@ -79,11 +79,6 @@ If the time argument is used, 5 minutes before the system goes down the /run/nol
 
       const reboot = options.reboot
       const date = new Date(new Date().getTime() + parsedTime)
-      const parsedWall =
-        wall ||
-        `The system is going down for ${
-          reboot ? 'reboot' : 'poweroff'
-        } at ${date}`
 
       pendings.push({
         timeout: setTimeout(() => process.exit(reboot ? 52 : 0), parsedTime),
@@ -91,7 +86,14 @@ If the time argument is used, 5 minutes before the system goes down the /run/nol
         date,
       })
 
-      if (!options['no-wall']) ctx.broadcast(parsedWall)
+      if (!options['no-wall'])
+        ctx.broadcast(
+          wall ||
+            `The system is going down for ${
+              reboot ? 'reboot' : 'poweroff'
+            } at ${date}`
+        )
+
       return `${
         reboot ? 'Reboot' : 'Shutdown'
       } scheduled for ${date}, use 'shutdown -c' to cancel.`
