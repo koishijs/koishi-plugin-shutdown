@@ -16,10 +16,9 @@ export function apply(ctx: Context) {
   ctx
     .command('shutdown [time:string] [wall:text]', { authority: 4 })
     .option('reboot', '-r', { fallback: false })
-    .option('k', '-k', { fallback: false })
-    .option('no-wall', '', { fallback: false })
-    .option('c', '-c', { fallback: false })
-    .option('show', '', { fallback: false })
+    .option('wall', '-w', { fallback: false })
+    .option('clear', '-c', { fallback: false })
+    .option('show', '-s', { fallback: false })
     .action(({ options, session }, time, wall) => {
       // Handle --show
       if (options.show) {
@@ -32,18 +31,16 @@ export function apply(ctx: Context) {
         return result.join('\n')
       }
 
-      // Handle -c
-      if (options.c) {
+      // Handle --clear
+      if (options.clear) {
         if (!pendings.length) return session.text('.no-pending')
-
         for (const pending of pendings.splice(0)) {
           clearTimeout(pending.timeout)
         }
-
-        if (!options['no-wall']) {
-          ctx.broadcast(<i18n path="commands.shutdown.wall-messages.cancel"/>)
+        if (wall || options.wall) {
+          ctx.broadcast(wall || <i18n path="commands.shutdown.wall-messages.clear"/>)
         }
-        return session.text('.cancel')
+        return session.text('.clear')
       }
 
       let parsedTime = parseTime(time || '+1')
@@ -60,7 +57,7 @@ export function apply(ctx: Context) {
         date,
       })
 
-      if (!options['no-wall']) {
+      if (wall || options.wall) {
         const path = `commands.shutdown.wall-messages.${action}`
         ctx.broadcast(wall || <i18n path={path}>{date}</i18n>)
       }
