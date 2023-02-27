@@ -1,12 +1,28 @@
 import { Context, Schema } from 'koishi'
+// FIXME waiting for upstream typing fix
+import {} from '@koishijs/loader'
+
+declare module 'koishi' {
+  interface EnvData {
+    shutdown: ShutdownInfo
+  }
+}
+
+interface ShutdownInfo {
+  subtype: string
+  channelId: string
+  guildId: string
+  sid: string
+  message: string
+}
 
 export const name = 'shutdown'
 
 export const Config: Schema<{}> = Schema.object({})
 
 interface Pending {
-  timeout: NodeJS.Timeout
-  reboot: boolean
+  timer: NodeJS.Timeout
+  code: number
   date: Date
 }
 
@@ -15,9 +31,22 @@ export function apply(ctx: Context) {
 
   ctx.i18n.define('en', require('./locales/en-US.yml'))
 
+  const info = ctx.envData.shutdown
+  if (info) {
+    const { sid, channelId, guildId, message } = info
+    ctx.envData.shutdown = null
+    const dispose = ctx.on('bot-status-updated', (bot) => {
+      if (bot.sid !== sid || bot.status !== 'online') return
+      dispose()
+      // FIXME waiting for subtype support
+      bot.sendMessage(channelId, message, guildId)
+    })
+  }
+
   ctx
     .command('shutdown [time:string] [wall:text]', { authority: 4 })
     .option('reboot', '-r', { fallback: false })
+    .option('rebootHard', '-R', { fallback: false })
     .option('wall', '-w', { fallback: false })
     .option('clear', '-c', { fallback: false })
     .option('show', '-s', { fallback: false })
@@ -27,7 +56,7 @@ export function apply(ctx: Context) {
         if (!pendings.length) return session.text('.no-pending')
         const result = [session.text('.list-header')]
         for (const pending of pendings) {
-          const type = session.text(`.types.${pending.reboot ? 'reboot' : 'shutdown'}`)
+          const type = session.text(`.types.${pending.code ? 'reboot' : 'shutdown'}`)
           result.push(session.text('.list-item', [type, pending.date]))
         }
         return result.join('\n')
@@ -37,7 +66,7 @@ export function apply(ctx: Context) {
       if (options.clear) {
         if (!pendings.length) return session.text('.no-pending')
         for (const pending of pendings.splice(0)) {
-          clearTimeout(pending.timeout)
+          clearTimeout(pending.timer)
         }
         if (wall || options.wall) {
           ctx.broadcast(wall || <i18n path="commands.shutdown.wall-messages.clear"/>)
@@ -49,15 +78,19 @@ export function apply(ctx: Context) {
       if (time === '+0' || time === 'now') parsedTime = 0
       else if (!parsedTime) return session.text('.invalid-time', [time])
 
-      const reboot = options.reboot
+      const { subtype, channelId, guildId, sid } = session
+      const code = options.reboot ? 51 : options.rebootHard ? 52 : 0
       const date = new Date(new Date().getTime() + parsedTime)
-      const action = reboot ? 'reboot' : 'poweroff'
+      const action = code ? 'reboot' : 'poweroff'
+      const timer = setTimeout(() => {
+        if (!ctx.loader) process.exit(code)
+        const message = session.text('.restarted')
+        ctx.envData.shutdown = { subtype, channelId, guildId, sid, message }
+        // FIXME waiting for upstream typing fix
+        ctx.loader.fullReload.call(ctx.loader, code)
+      }, parsedTime)
 
-      pendings.push({
-        timeout: setTimeout(() => process.exit(reboot ? 52 : 0), parsedTime),
-        reboot,
-        date,
-      })
+      pendings.push({ timer, code, date })
 
       if (wall || options.wall) {
         const path = `commands.shutdown.wall-messages.${action}`

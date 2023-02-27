@@ -9,7 +9,8 @@ commands:
       If the time argument is used, 5 minutes before the system goes down the /run/nologin file is created to ensure that further logins shall not be allowed.
 
     options:
-      reboot: Reboot Koishi.
+      reboot: Soft reboot.
+      rebootHard: Hard reboot.
       k: Do not power off or reboot, but just write the wall message.
       no-wall: Do not send wall message before power off or reboot.
       clear: |-
@@ -27,6 +28,7 @@ commands:
       clear: Cleared all pending shutdowns.
       reboot: 'Reboot scheduled for {0}, use "shutdown -c" to cancel.'
       poweroff: 'Power off scheduled for {0}, use "shutdown -c" to cancel.'
+      restarted: 'Koishi has been restarted.'
 
     wall-messages:
       clear: The system shutdown has been cancelled.
