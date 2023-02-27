@@ -96,7 +96,7 @@ export function apply(ctx: Context) {
         const path = `commands.shutdown.wall-messages.${action}`
         ctx.broadcast(wall || <i18n path={path}>{date}</i18n>)
       }
-      return session.text('.' + action, [date])
+      return session.text('.' + action, [date.toString()])
     })
 }
 
