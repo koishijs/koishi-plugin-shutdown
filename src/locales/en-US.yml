@@ -1,0 +1,32 @@
+commands:
+  shutdown:
+    description: Power off or reboot Koishi
+    usage: |-
+      shutdown may be used to power off or reboot Koishi.
+      The first argument may be a time string (which is usually "now"). Optionally, this may be followed by a wall message to be sent to all logged-in users before going down.
+      The time string may either be in the format "hh:mm" for hour/minutes specifying the time to execute the shutdown at, specified in 24h clock format. Alternatively it may be in the syntax "+m" referring to the specified number of minutes m from now. "now" is an alias for "+0", i.e. for triggering an immediate shutdown. If no time argument is specified, "+1" is implied.
+      Note that to specify a wall message you must specify a time argument, too.
+      If the time argument is used, 5 minutes before the system goes down the /run/nologin file is created to ensure that further logins shall not be allowed.
+
+    options:
+      reboot: Reboot Koishi.
+      k: Do not power off or reboot, but just write the wall message.
+      no-wall: Do not send wall message before power off or reboot.
+      c: Cancel a pending shutdown. This may be used to cancel the effect of an invocation of shutdown with a time argument that is not "+0" or "now".
+      show: Show a pending shutdown action and time if there is any.
+
+    messages:
+      no-pending: There's no pending shutdown.
+      list-header: 'Pending shutdowns:'
+      list-item:
+        reboot: 'Reboot scheduled at: {0}'
+        poweroff: 'Power off scheduled at: {0}'
+      invalid-time: 'Failed to parse time specification: {0}'
+      cancel: Cleared all pending shutdowns.
+      reboot: 'Reboot scheduled for {0}, use 'shutdown -c' to cancel.'
+      poweroff: 'Power off scheduled for {0}, use 'shutdown -c' to cancel.'
+
+    wall-messages:
+      cancel: The system shutdown has been cancelled.
+      reboot: The system is going down for reboot at {0}.
+      poweroff: The system is going down for power off at {0}.
