@@ -13,6 +13,8 @@ interface Pending {
 export function apply(ctx: Context) {
   const pendings: Pending[] = []
 
+  ctx.i18n.define('en', require('./locales/en-US.yml'))
+
   ctx
     .command('shutdown [time:string] [wall:text]', { authority: 4 })
     .option('reboot', '-r', { fallback: false })
