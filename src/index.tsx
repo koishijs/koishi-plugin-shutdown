@@ -56,8 +56,8 @@ export function apply(ctx: Context) {
         if (!pendings.length) return session.text('.no-pending')
         const result = [session.text('.list-header')]
         for (const pending of pendings) {
-          const type = session.text(`.types.${pending.code ? 'reboot' : 'shutdown'}`)
-          result.push(session.text('.list-item', [type, pending.date]))
+          const action = pending.code ? 'reboot' : 'poweroff'
+          result.push(session.text(`.list-item.${action}`, [pending.date.toString()]))
         }
         return result.join('\n')
       }
@@ -94,9 +94,9 @@ export function apply(ctx: Context) {
 
       if (wall || options.wall) {
         const path = `commands.shutdown.wall-messages.${action}`
-        ctx.broadcast(wall || <i18n path={path}>{date}</i18n>)
+        ctx.broadcast(wall || <i18n path={path}>{date.toString()}</i18n>)
       }
-      return session.text('.' + action, [date])
+      return session.text('.' + action, [date.toString()])
     })
 }
 
