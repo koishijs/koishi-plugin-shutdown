@@ -29,7 +29,7 @@ interface Pending {
 export function apply(ctx: Context) {
   const pendings: Pending[] = []
 
-  ctx.i18n.define('en', require('./locales/en-US.yml'))
+  ctx.i18n.define('en', require('./locales/en-US'))
 
   const info = ctx.envData.shutdown
   if (info) {
