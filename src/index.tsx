@@ -45,6 +45,7 @@ export function apply(ctx: Context) {
 
   ctx
     .command('shutdown [time:string] [wall:text]', { authority: 4 })
+    .alias('exit')
     .option('reboot', '-r', { fallback: false })
     .option('rebootHard', '-R', { fallback: false })
     .option('wall', '-w', { fallback: false })

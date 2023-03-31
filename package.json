@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-shutdown",
   "description": "shutdown(8) for Koishi.",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "author": {
     "name": "Il Harper",
     "email": "afanyiyu@hotmail.com",
@@ -33,14 +33,23 @@
   "keywords": [
     "chatbot",
     "koishi",
-    "plugin"
+    "plugin",
+    "exit",
+    "shutdown",
+    "reboot",
+    "poweroff",
+    "quit",
+    "terminate",
+    "kill",
+    "halt",
+    "stop"
   ],
   "peerDependencies": {
     "koishi": "^4.10.6"
   },
   "devDependencies": {
     "atsc": "^1.2.2",
-    "koishi": "^4.11.7",
+    "koishi": "^4.12.1",
     "typescript": "^4.9.5"
   },
   "koishi": {
