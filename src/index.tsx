@@ -1,6 +1,4 @@
 import { Context, Schema } from 'koishi'
-// FIXME waiting for upstream typing fix
-import {} from '@koishijs/loader'
 
 declare module 'koishi' {
   interface EnvData {
@@ -29,6 +27,7 @@ interface Pending {
 export function apply(ctx: Context) {
   const pendings: Pending[] = []
 
+  ctx.i18n.define('zh', require('./locales/zh-CN'))
   ctx.i18n.define('en', require('./locales/en-US'))
 
   const info = ctx.envData.shutdown
@@ -87,7 +86,6 @@ export function apply(ctx: Context) {
         if (!ctx.loader) process.exit(code)
         const message = session.text('.restarted')
         ctx.envData.shutdown = { subtype, channelId, guildId, sid, message }
-        // FIXME waiting for upstream typing fix
         ctx.loader.fullReload.call(ctx.loader, code)
       }, parsedTime)
 

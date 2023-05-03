@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-shutdown",
   "description": "shutdown(8) for Koishi.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": {
     "name": "Il Harper",
     "email": "afanyiyu@hotmail.com",
@@ -49,13 +49,13 @@
   },
   "devDependencies": {
     "atsc": "^1.2.2",
-    "koishi": "^4.12.1",
+    "koishi": "^4.12.4",
     "typescript": "^4.9.5"
   },
   "koishi": {
     "description": {
-      "en": "[shutdown(8)](https://www.freedesktop.org/software/systemd/man/shutdown.html) for Koishi.",
-      "zh": "适用于 Koishi 的 [shutdown(8)](https://www.freedesktop.org/software/systemd/man/shutdown.html)。"
+      "en": "[shutdown(8)](https://www.freedesktop.org/software/systemd/man/shutdown.html) for Koishi. Shutdown and reboot the bot, with scheduling and cancellation.",
+      "zh": "适用于 Koishi 的 [shutdown(8)](https://www.freedesktop.org/software/systemd/man/shutdown.html)。关闭和重启机器人，支持定时和取消。"
     },
     "locales": [
       "en"
